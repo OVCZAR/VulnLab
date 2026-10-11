@@ -1,103 +1,149 @@
-# VulnLab
+# VulnLab — lokalne laboratorium cyberbezpieczeństwa
 
-**VulnLab** to lokalne laboratorium bezpieczeństwa aplikacji internetowych stworzone w Pythonie z wykorzystaniem FastAPI i SQLite. Projekt służy do praktycznej nauki wykrywania podatności oraz poznawania metod ich naprawiania.
+VulnLab to projekt edukacyjny służący do nauki podstaw bezpieczeństwa aplikacji internetowych. Zawiera celowo podatne endpointy, ich zabezpieczone odpowiedniki oraz testy automatyczne, które pokazują różnice w działaniu obu wersji.
 
-Laboratorium pozwala porównywać celowo podatne implementacje z poprawionymi rozwiązaniami, a następnie sprawdzać ich działanie za pomocą testów automatycznych.
+Projekt powstaje w celach edukacyjnych i portfolio z zakresu cyberbezpieczeństwa.
 
 ## Funkcjonalności
 
-- Demonstracja podatności SQL Injection.
-- Porównanie podatnego i poprawionego zapytania SQL.
-- Lokalna baza danych SQLite z przykładowymi danymi.
-- Interfejs API oparty na FastAPI.
-- Automatyczne testy bezpieczeństwa z wykorzystaniem pytest.
-- Interaktywna dokumentacja API dostępna przez Swagger UI.
+- **SQL Injection (SQLi)** — porównanie podatnego zapytania SQL z zapytaniem wykorzystującym parametry.
+- **Cross-Site Scripting (XSS)** — demonstracja niebezpiecznego umieszczania danych użytkownika w HTML oraz ich bezpiecznego kodowania.
+- **Testy automatyczne** — sprawdzanie zachowania endpointów podatnych i zabezpieczonych.
+- **Raporty bezpieczeństwa** — dokumentacja wykrytych podatności, przebiegu testów i metod zabezpieczenia.
 
-## Wykorzystane technologie
+## Technologie
 
-- **Python** – język programowania.
-- **FastAPI** – tworzenie interfejsu API.
-- **SQLite** – lokalna baza danych.
-- **Uvicorn** – serwer aplikacji.
-- **pytest** – testy automatyczne.
-- **HTTPX** – obsługa żądań HTTP w testach.
+- Python
+- FastAPI
+- SQLite
+- pytest
+- HTML
+- Git i GitHub
 
-## Aktualny stan projektu
+## Struktura projektu
 
-### Zrealizowane
+```text
+VulnLab/
+├── app.py
+├── test_app.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+└── docs/
+    └── findings/
+        ├── sqli.md
+        └── xss.md
+```
 
-- Podstawowe endpointy aplikacji.
-- Endpoint sprawdzający stan serwera.
-- Demonstracja SQL Injection.
-- Poprawiona wersja zapytania wykorzystująca parametryzację.
-- Testy automatyczne sprawdzające działanie obu implementacji.
+Lokalne pliki środowiska wirtualnego, baza danych i pliki cache nie są przeznaczone do publikowania w repozytorium.
 
-### Planowany rozwój
+## Wymagania
 
-- **XSS (Cross-Site Scripting)** – demonstracja nieprawidłowego przetwarzania treści użytkownika.
-- **IDOR (Insecure Direct Object Reference)** – demonstracja błędów kontroli dostępu do zasobów.
-- System zadań typu CTF z podpowiedziami i flagami.
-- Interfejs graficzny laboratorium.
-- Dokumentacja wykrytych podatności i sposobów ich naprawiania.
-- Rozszerzenie zestawu testów bezpieczeństwa.
+- Python 3.10 lub nowszy
+- Git (opcjonalnie, jeśli projekt został już pobrany)
+- Windows, Linux lub macOS
 
-## Uruchomienie projektu
+## Instalacja
 
-### 1. Utworzenie środowiska wirtualnego
+Sklonuj repozytorium:
 
-W terminalu, w głównym katalogu projektu, wykonaj:
+```bash
+git clone https://github.com/OVCZAR/VulnLab.git
+cd VulnLab
+```
 
-```powershell
+Utwórz środowisko wirtualne:
+
+```bash
 python -m venv .venv
 ```
 
-### 2. Aktywacja środowiska w systemie Windows
+Aktywuj środowisko.
+
+Windows — PowerShell:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-Jeżeli PowerShell blokuje uruchamianie skryptów, należy rozwiązać ten problem zgodnie z konfiguracją lokalnego środowiska.
+Linux / macOS:
 
-### 3. Instalacja wymaganych bibliotek
+```bash
+source .venv/bin/activate
+```
 
-```powershell
+Zainstaluj zależności:
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
-### 4. Uruchomienie aplikacji
+## Uruchomienie
 
-```powershell
+Uruchom serwer lokalny:
+
+```bash
 python -m uvicorn app:app --host 127.0.0.1 --port 8000
 ```
 
-Po uruchomieniu aplikacja będzie dostępna lokalnie.
-
-Dokumentacja API:
+Dokumentacja API będzie dostępna pod adresem:
 
 http://127.0.0.1:8000/docs
 
-## Uruchamianie testów
+Podstawowy endpoint kontrolny:
 
-Aby uruchomić testy automatyczne, wykonaj:
+http://127.0.0.1:8000/health
 
-```powershell
+## Dostępne endpointy
+
+| Endpoint | Opis |
+|---|---|
+| `/` | Informacje o projekcie |
+| `/health` | Kontrola działania aplikacji |
+| `/lab/sqli/vulnerable` | Celowo podatne wyszukiwanie SQL |
+| `/lab/sqli/fixed` | Wyszukiwanie z parametryzacją SQL |
+| `/lab/xss/vulnerable` | Celowo podatne generowanie HTML |
+| `/lab/xss/fixed` | Generowanie HTML z kodowaniem danych |
+
+Endpointy wyszukiwania SQL przyjmują parametr `q`, a endpointy XSS parametr `name`.
+
+## Testy automatyczne
+
+Uruchom wszystkie testy:
+
+```bash
 python -m pytest -v
 ```
 
-Testy sprawdzają między innymi działanie podstawowych endpointów, prawidłowe wyszukiwanie produktów oraz różnice w zachowaniu podatnej i poprawionej implementacji SQL.
+Testy obejmują m.in.:
 
-## Bezpieczeństwo
+- poprawność odpowiedzi endpointu kontrolnego;
+- prawidłowe wyszukiwanie produktów;
+- różnicę w zachowaniu podatnego i zabezpieczonego zapytania SQL;
+- różnicę w sposobie umieszczania danych użytkownika w HTML.
 
-VulnLab zawiera celowo podatny kod przeznaczony wyłącznie do celów edukacyjnych.
+## Zabezpieczenia
 
-- Uruchamiaj laboratorium w kontrolowanym środowisku lokalnym.
-- Pozostaw serwer przypisany do adresu `127.0.0.1`.
-- Nie wystawiaj podatnych endpointów do publicznego internetu.
-- Nie testuj opisanych technik na systemach bez odpowiedniego upoważnienia.
+W zabezpieczonych wersjach zastosowano:
 
-## Cel projektu
+- parametryzację zapytań SQL, aby oddzielić kod SQL od danych wejściowych;
+- kodowanie znaków specjalnych HTML, aby dane użytkownika nie były interpretowane jako znaczniki HTML lub kod skryptu.
 
-Celem VulnLab jest rozwijanie praktycznych umiejętności z zakresu cyberbezpieczeństwa aplikacji internetowych, analizy podatności, bezpiecznego programowania i automatyzacji testów bezpieczeństwa.
+Wersje podatne są celowym elementem laboratorium i służą wyłącznie do demonstracji problemów bezpieczeństwa.
 
-Projekt jest rozwijany etapami, tak aby każda kolejna funkcjonalność obejmowała zarówno demonstrację problemu, jak i analizę sposobu jego rozwiązania.
+## Raporty
+
+Raporty dotyczące poszczególnych podatności znajdują się w katalogu `docs/findings/`.
+
+- [SQL Injection](docs/findings/sqli.md)
+- [Cross-Site Scripting (XSS)](docs/findings/xss.md)
+
+## Bezpieczeństwo i zakres projektu
+
+Projekt jest przeznaczony do nauki oraz testów na własnym, lokalnym środowisku.
+
+**Nie należy udostępniać celowo podatnych endpointów publicznie ani wykorzystywać ich do testowania systemów bez zgody właściciela.**
+
+## Status projektu
+
+Projekt jest rozwijany. Kolejne planowane etapy obejmują rozszerzenie laboratorium o następne podatności, dodatkowe testy oraz dalsze uporządkowanie dokumentacji.
