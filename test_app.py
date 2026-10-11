@@ -56,3 +56,27 @@ def test_vulnerable_normal_search():
         "Mouse"
     ]
 
+
+def test_xss_vulnerable():
+    payload = "<script>alert('XSS')</script>"
+
+    response = client.get(
+        "/lab/xss/vulnerable",
+        params={"name": payload},
+    )
+
+    assert response.status_code == 200
+    assert payload in response.text
+
+
+def test_xss_fixed():
+    payload = "<script>alert('XSS')</script>"
+
+    response = client.get(
+        "/lab/xss/fixed",
+        params={"name": payload},
+    )
+
+    assert response.status_code == 200
+    assert payload not in response.text
+    assert "&lt;script&gt;" in response.text

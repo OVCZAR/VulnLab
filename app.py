@@ -1,8 +1,9 @@
-
 from pathlib import Path
+import html
 import sqlite3
 
 from fastapi import FastAPI, Query
+from fastapi.responses import HTMLResponse
 
 app = FastAPI(
     title="VulnLab",
@@ -89,3 +90,38 @@ def fixed_search(q: str = Query(default="")):
         ).fetchall()
 
     return {"results": [dict(row) for row in rows]}
+
+
+@app.get("/lab/xss/vulnerable", response_class=HTMLResponse)
+def vulnerable_xss(name: str = ""):
+    # INTENTIONALLY VULNERABLE: local training only.
+    return HTMLResponse(
+        f"""
+        <!DOCTYPE html>
+        <html lang="pl">
+        <head><meta charset="UTF-8"><title>VulnLab - XSS</title></head>
+        <body>
+            <h1>Wersja podatna na XSS</h1>
+            <p>Witaj, {name}!</p>
+        </body>
+        </html>
+        """
+    )
+
+
+@app.get("/lab/xss/fixed", response_class=HTMLResponse)
+def fixed_xss(name: str = ""):
+    safe_name = html.escape(name)
+
+    return HTMLResponse(
+        f"""
+        <!DOCTYPE html>
+        <html lang="pl">
+        <head><meta charset="UTF-8"><title>VulnLab - XSS</title></head>
+        <body>
+            <h1>Wersja zabezpieczona przed XSS</h1>
+            <p>Witaj, {safe_name}!</p>
+        </body>
+        </html>
+        """
+    )
