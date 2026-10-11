@@ -43,3 +43,16 @@ def test_sqli_fixed():
 
     assert response.status_code == 200
     assert response.json()["results"] == []
+
+
+def test_vulnerable_normal_search():
+    response = client.get(
+        "/lab/sqli/vulnerable",
+        params={"q": "Mouse"},
+    )
+
+    assert response.status_code == 200
+    assert [item["name"] for item in response.json()["results"]] == [
+        "Mouse"
+    ]
+
